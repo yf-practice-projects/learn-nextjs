@@ -1,6 +1,8 @@
 "use client"
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { inputFieldsType, inputFormSchema } from "./schema"
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface inputFields {
   name: string;
@@ -17,7 +19,7 @@ const types = [
 ]
 
 export default function Home() {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<inputFields>();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<inputFieldsType>({resolver:zodResolver(inputFormSchema)});
   const onSubmit:SubmitHandler<inputFields> = (data) => console.log(data);
   return (
     <div className="text-center">
@@ -26,7 +28,7 @@ export default function Home() {
           <label htmlFor="name">name</label>
           <input
             id="name"
-            {...register("name", { required: "nameは必須です", minLength: { value: 4, message: "nameは4文字以上" } })}
+            {...register("name")}
           />
           {errors.name && <p>{errors.name.message}</p>}
         </div>
@@ -36,18 +38,19 @@ export default function Home() {
           <input
             id="num"
             type="number"
-            {...register("num", { required: "選択は必須" })}
+            {...register("num")}
           />
           {errors.num && <p>{errors.num.message}</p>}
         </div>
         <div className="m-2">
           <label htmlFor="listBox">セレクトボックス</label>
-          <select {...register("listBox", { required: true })}>
+          <select {...register("listBox")}>
             <option value="">選択してください</option>
             {types.map((item) => (
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
+          {errors.listBox && <p>{errors.listBox.message}</p>}
         </div>
         <button type="button" className="m-2" onClick={()=>reset()}>clear</button>
         <button type="submit" className="m-2">submit</button>
