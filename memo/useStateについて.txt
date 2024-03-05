@@ -1,0 +1,36 @@
+-----------useState--------------------------------------
+
+配列やオブジェクトを管理している場合は注意が必要です。具体的には配列のpushで値を追加しても正しく反映されないです。
+
+  const addItem = (item) => {
+    items.push(item); // 破壊的な変更
+    setItems(items);
+  };
+  return (
+    <div className="App">
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={() => addItem("New item")}>Add item</button>
+    </div>
+  );
+
+配列やオブジェクトを更新する時にはスプレッド演算子を使用しましょう。
+
+  const [items, setItems] = useState([]);
+
+  const addItem = (item) => {
+    setItems([...items, item]); // 破壊的な変更を回避する
+  };
+  return (
+    <div className="App">
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={() => addItem("New item")}>Add item</button>
+    </div>
+  );
