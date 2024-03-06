@@ -1,0 +1,186 @@
+D:.
+│  layout.tsx
+│  middleware.ts
+│  page.tsx (ルートのぺージ) 
+│
+├─dashboard
+│  │  layout.tsx　共通レイアウト。ヘッダーやサイドバーを共通して使用する場合 に利用する
+│  │
+│  ├─(overview)
+│  │      loading.tsx
+│  │      page.tsx
+│  │
+│  ├─customers
+│  │      page.tsx
+│  │
+│  └─invoices
+│      │  error.tsx
+│      │  page.tsx
+│      │
+│      ├─create
+│      │      page.tsx
+│      │
+│      └─[id]
+│          └─edit
+│                  not-found.tsx
+│                  page.tsx
+│
+├─lib
+│      actions.ts			 (formActionのメソッド)
+│      data.ts				 (データのinitデータ取得処理)
+│      definitions.ts　(データ型)
+│      placeholder-data.js
+│      utils.ts
+│
+├─login
+│      pag
+│
+└─ui
+    │  acme-logo.tsx
+    │  button.tsx
+    │  fonts.ts
+    │  global.css
+    │  login-form.tsx
+    │  search.tsx
+    │  skeletons.tsx
+    │
+    ├─customers
+    │      table.tsx
+    │
+    ├─dashboard
+    │      cards.tsx
+    │      latest-invoices.tsx
+    │      nav-links.tsx
+    │      revenue-chart.tsx
+    │      sidenav.tsx
+    │
+    └─invoices
+            breadcrumbs.tsx
+            buttons.tsx
+            create-form.tsx
+            edit-form.tsx
+            pagination.tsx
+            status.tsx
+            table.tsx
+
+Zod
+型検証ライブラリ
+
+clsx
+CSSのクラス名を動的に構築する際に役立つ。
+https://qiita.com/gotomeltdown/items/11bfa9c17cf820eb3ccf
+
+Linkタグを使う理由
+・現在aタグを使うと基本的にページの更新が全体的に行われる。
+・Linkタグを使うとLayout.tsx内で指定されるPage.tsxのコンポーネント内でページ更新がされるためSPAが実現される
+
+Imageタグについて
+デバイスごとの画像の切り替えはclassNameで対応
+  <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
+    {/* Add Hero Images Here */}
+    <Image
+      src="/hero-desktop.png"
+      width={1000}
+      height={760}
+      className="hidden md:block"
+      alt="Screenshots of the dashboard project showing desktop and mobile versions"
+    />
+    <Image
+      src="/hero-mobile.png"
+      width={560}
+      height={620}
+      className="block md:hidden"
+      alt="Screenshot of the dashboard project showing mobile version"
+    />
+  </div>
+
+usePathname
+ユーザーが現在どのページにいるのかを示すために、アクティブなリンクを表示することです。
+これを行うには、URLからユーザーの現在のパスを取得する必要があります。
+Next.jsはusePathname()というフックを提供しており、これを使用してパスをチェックし、このパターンを実装することができます。
+
+
+Server Components
+promiseをサポートしており、データ取得のような非同期タスクのためのシンプルなソリューションを提供します。
+useEffectやuseState、データ取得ライブラリに手を伸ばすことなく、async/await構文を使用できます。
+
+Promise.all()
+処理1の後に処理2を行いたいときなどに使用
+const invoiceCountPromise = pool.query(`SELECT COUNT(*) FROM invoices`);
+const customerCountPromise = pool.query(`SELECT COUNT(*) FROM customers`);
+const invoiceStatusPromise = pool.query(`SELECT
+			SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
+			SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
+			FROM invoices`);
+
+const data = await Promise.all([
+	invoiceCountPromise,
+	customerCountPromise,
+	invoiceStatusPromise,
+]);
+
+satisfies
+値が特定の型を「満たす」（satisfies）かどうかを確認しながら、より厳密な型チェックを行うことができる。
+オブジェクトが特定の型を「満たす」かどうかをチェックする場合、追加のプロパティが存在していてもエラーにならない。
+
+import { revalidatePath } from 'next/cache';
+再検証する際に使われる
+https://zenn.dev/cybozu_frontend/articles/server-actions-and-revalidate
+
+
+useSearchParams
+現在のURLのパラメータにアクセスできます。たとえば、このURL /dashboard/invoices?page=1&query=pendingの検索パラメータは、
+次のようになります：{page：'1', query：pending'}となります。
+
+usePathname 
+現在のURLのパス名を読み取ります。例えば、ルート /dashboard/invoices の場合、usePathname は '/dashboard/invoices' を返します。
+
+useRouter 
+クライアントコンポーネント内のルート間のナビゲーションをプログラムで可能にします。
+メソッドは複数ある。
+例：const { replace } = useRouter(); urlを書き換える
+
+デバウンス
+import { useDebouncedCallback } from 'use-debounce';
+関数が起動する速度を制限するプログラミングの手法である。今回のケースでは、ユーザーが入力を止めたときだけデータベースに問い合わせを行いたい。
+デバウンスの仕組み
+トリガーイベント：デバウンスすべきイベント（検索ボックスのキー入力など）が発生すると、タイマーがスタートします。
+待機：タイマーが切れる前に新しいイベントが発生すると、タイマーがリセットされます。
+実行：タイマーのカウントダウンが終了すると、デバウンス機能が実行される。
+
+Server Actionsとは？
+React Server Actionsを使用すると、非同期コードをサーバー上で直接実行できます。
+これにより、データを変更するためのAPIエンドポイントを作成する必要がなくなります。
+代わりに、サーバー上で実行される非同期関数を記述し、クライアントまたはサーバーコンポーネントから呼び出すことができます。
+Server Actionsは、POSTリクエスト、暗号化されたクロージャ、厳密な入力チェック、エラーメッセージのハッシュ化、
+ホストの制限などの技術によってこれを実現し、これらすべてが連携してアプリの安全性を大幅に高めます。
+
+'use server'を追加することで、ファイル内にエクスポートされたすべての関数をサーバー関数としてマークすることができます。
+これらのサーバー関数は、クライアントコンポーネントやサーバーコンポーネントにインポートすることができます。
+また、サーバーコンポーネントの中に直接サーバーアクションを記述することもできます。
+
+
+selectのaria-describedbyについて
+<select
+	id="customer"
+	name="customerId"
+	className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+	defaultValue=""
+	aria-describedby="customer-error"
+>
+<div id="customer-error" aria-live="polite" aria-atomic="true">
+	{state.errors?.customerId &&
+		state.errors.customerId.map((error: string) => (
+			<p className="mt-2 text-sm text-red-500" key={error}>
+				{error}
+			</p>
+		))}
+</div>
+aria-describedby="customer-error"：
+これは、select要素とエラーメッセージコンテナとの関係を確立します。
+これは、id="customer-error" のコンテナが select 要素を記述していることを示します。
+スクリーン・リーダーは、ユーザーがエラーを通知するためにセレクト・ボックスと対話するときに、この説明を読みます。
+aria-live="polite"：
+div 内のエラーが更新されたとき、スクリーンリーダーはユーザーに丁寧に通知する必要があります。
+コンテンツが変更されたとき（例えば、ユーザがエラーを修正したとき）、スクリーン・リーダはこれらの変更をアナウンスしますが、
+ユーザの邪魔にならないように、ユーザがアイドルであるときに限ります。

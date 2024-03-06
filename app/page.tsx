@@ -18,6 +18,9 @@ export default function Page() {
 			<Link
 				className="m-4"
 				href="/zod">zod</Link>
+			<Link
+				className="m-4"
+				href="/tags">tags</Link>
 		</div>
 	)
 }
