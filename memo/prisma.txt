@@ -1,0 +1,44 @@
+・npx prisma init 
+prismaを使い始める際にこのコマンドを実行して、 スキーマを定義するためのファイルを生成します。
+
+・npx prisma db pull
+既存のDBからテーブル定義などのスキーマを持ってきて、 schema.prisma に反映することができます。
+
+・npx prisma migrate dev --name init
+devサブコマンドは、開発環境でのマイグレーション操作を意味します。
+具体的には、Prisma Migrateが現在のPrismaスキーマ（schema.prismaファイル）に基づいて、
+データベーススキーマの変更を生成し、適用するプロセスを指します。
+このサブコマンドは、開発中にスキーマの変更を頻繁に行い、それらの変更をデータベースに迅速に反映させたい場合に特に有用です。
+
+--nameフラグは、生成されるマイグレーションファイルの名前を指定します。この例ではinitという名前が使われています。
+initは、初期化またはプロジェクト開始時のマイグレーションを意味する慣例的な名前ですが、任意の名前を指定することができます。
+マイグレーションファイルの名前は、prisma/migrationsディレクトリ内でマイグレーションの履歴を追跡する際に、
+そのマイグレーションの目的を簡潔に示すために使用されます。
+たとえば、ユーザーテーブルを追加するマイグレーションでは--name add-user-tableのように命名することが一般的です。
+
+・テーブル間リレーション
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique @db.VarChar(255)
+  name    String?  @db.VarChar(255)
+  posts   Post[]
+  profile Profile?
+}
+

@@ -21,6 +21,15 @@ export default function Page() {
 			<Link
 				className="m-4"
 				href="/tags">tags</Link>
+			<Link
+				className="m-4"
+				href="/map">map</Link>
+			<Link
+				className="m-4"
+				href="/conf/origin">origin</Link>
+			<Link
+				className="m-4"
+				href="/conf/cookie">cookie</Link>
 		</div>
 	)
 }
