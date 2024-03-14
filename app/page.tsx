@@ -30,6 +30,10 @@ export default function Page() {
 			<Link
 				className="m-4"
 				href="/conf/cookie">cookie</Link>
+			
+			<Link
+				className="m-4"
+				href="/hooks">hooks</Link>
 		</div>
 	)
 }

@@ -1,0 +1,49 @@
+-----------useState--------------------------------------
+
+配列やオブジェクトを管理している場合は注意が必要です。具体的には配列のpushで値を追加しても正しく反映されないです。
+
+  const addItem = (item) => {
+    items.push(item); // 破壊的な変更
+    setItems(items);
+  };
+  return (
+    <div className="App">
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={() => addItem("New item")}>Add item</button>
+    </div>
+  );
+
+配列やオブジェクトを更新する時にはスプレッド演算子を使用しましょう。
+
+  const [items, setItems] = useState([]);
+
+  const addItem = (item) => {
+    setItems([...items, item]); // 破壊的な変更を回避する
+  };
+  return (
+    <div className="App">
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={() => addItem("New item")}>Add item</button>
+    </div>
+  );
+
+
+-----------useMemo--------------------------------------
+useMemoフックは、計算コストの高い関数の戻り値をメモ化することによって、パフォーマンスを最適化するためにReactで使用されます。
+依存配列内の値が変更されたときにのみ関数が再計算され、それ以外の時はメモ化された値が再利用されます。
+これは、不要な再計算を避けるため、特にレンダリングの際に計算コストの高い処理を行う必要がある場合に有用です。
+
+
+-----------useCallback--------------------------------------
+useCallbackフックは、Reactにおいて関数のインスタンスをメモ化するために使用されます。
+これにより、依存関係が変更された場合にのみ関数が再作成されるため、パフォーマンスの最適化に役立ちます。
+特に、コンポーネントの再レンダリングによって関数が不必要に再作成されるのを防ぎたい場合や、
+メモ化されたコールバックを子コンポーネントに渡す必要がある場合に有効です。
