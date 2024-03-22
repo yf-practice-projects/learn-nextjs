@@ -62,7 +62,7 @@ export default function Page() {
 					</button>
 				))}
 			</div>
-			<SelectedPinDialog></SelectedPinDialog>
+			<SelectedPinDialog name={"cat"}></SelectedPinDialog>
 		</div>
 	)
 }

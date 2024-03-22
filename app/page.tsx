@@ -34,6 +34,10 @@ export default function Page() {
 			<Link
 				className="m-4"
 				href="/hooks">hooks</Link>
+			
+			<Link
+				className="m-4"
+				href="/conf">conf</Link>
 		</div>
 	)
 }
